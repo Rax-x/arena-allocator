@@ -106,9 +106,7 @@ and appended to the arena's linked list of chunks. The allocation then proceeds 
 ```
 Resizes a previously allocated memory block `ptr` within the arena to `size` bytes.
 
-Unlike standard realloc, this function typically does not shrink allocations. If the new size is smaller than the original, it might just return the original pointer.
-
-If the new size is larger, it will allocate a new block of size bytes using arena_alloc, copy the contents from the old ptr to the new block, 
+Unlike standard realloc, it will allocate a new block of size bytes using arena_alloc, copy the contents from the old ptr to the new block, 
 and then effectively abandon the old block (as arena allocators typically don't support individual deallocations).
 
 It's important to note that `arena_realloc` might be less efficient than realloc in a general-purpose allocator 
