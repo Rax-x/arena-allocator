@@ -145,11 +145,14 @@ and appended to the arena's linked list of chunks. The allocation then proceeds 
 ---
 
 ```c
-  void* arena_realloc(arena_t* restrict arena, void* ptr, size_t size);
+  void* arena_realloc(arena_t* restrict arena, 
+                      const void* restrict ptr, 
+                      size_t old_size, 
+                      size_t new_size);
 ```
-Resizes a previously allocated memory block `ptr` within the arena to `size` bytes.
+Resizes a previously allocated memory block `ptr` within the arena to `new_size` bytes.
 
-Unlike standard realloc, it will allocate a new block of size bytes using arena_alloc, copy the contents from the old ptr to the new block, 
+Unlike standard realloc, it will allocate a new block of `new_size` bytes using `arena_alloc`, copy the contents from the old `ptr` to the new block, 
 and then effectively abandon the old block (as arena allocators typically don't support individual deallocations).
 
 It's important to note that `arena_realloc` might be less efficient than realloc in a general-purpose allocator 
@@ -157,10 +160,11 @@ because it often involves copying data and cannot truly "free" the old space.
 
 **Parameters:**
  - `arena`: A pointer to the `arena_t` structure.
- - `ptr`: A pointer to the memory block previously allocated by arena_alloc. If `ptr` is `NULL`, this function behaves like `arena_alloc`.
-- `size`: The new desired size for the memory block.
+ - `ptr`: A pointer to the memory block previously allocated by `arena_alloc`. If `ptr` is `NULL`, this function behaves like `arena_alloc`.
+ - `old_size`: The original size of the memory block `ptr`. An incorrect `old_size` will result in undefined behavior.
+ - `new_size`: The new desired size for the memory block.
 
-**Returns:** A `void*` pointer to the resized (or new) memory block, or `NULL` if the `size` is less or equal to zero.
+**Returns:** A `void*` pointer to the new memory block, or `NULL` if the `size` is less or equal to zero.
 
 ---
 

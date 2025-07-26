@@ -139,25 +139,27 @@ TEST_SUITE(arena_realloc) {
 
         arena_t arena = create_arena(1024);
 
-        const int initial_array_size = 100;
+        const int initial_array_length = 100;
+        const int initial_array_size = sizeof(int) * initial_array_length;
 
-        int* integers = (int*)arena_alloc(&arena, sizeof(int) * initial_array_size);
+        int* integers = (int*)arena_alloc(&arena, initial_array_size);
 
-        for(int i = 0; i < initial_array_size; i++) {
+        for(int i = 0; i < initial_array_length; i++) {
             integers[i] = rand() % RAND_MAX;
         }
 
-        const int new_array_size = initial_array_size + 12;
-        int* integers2 = (int*)arena_realloc(&arena, integers, sizeof(int) * new_array_size);
+        const int new_array_length = initial_array_length + 12;
+        const int new_array_size = sizeof(int) * new_array_length;
+        int* integers2 = (int*)arena_realloc(&arena, integers, initial_array_size, new_array_size);
 
-        const size_t expected_used_space = sizeof(int) * (initial_array_size + new_array_size);
+        const size_t expected_used_space = initial_array_size + new_array_size;
         const size_t used_space = arena_get_current_used_space(&arena);
 
         TEST_ASSERT(used_space == expected_used_space, 
                     "Expected %lu bytes used, but got %lu bytes.", 
                     expected_used_space, used_space);
 
-        TEST_ASSERT(memcmp(integers, integers2, initial_array_size) == 0, "Expected same content.");
+        TEST_ASSERT(memcmp(integers, integers2, initial_array_length) == 0, "Expected same content.");
         
         destroy_arena(&arena);
     }
@@ -166,18 +168,20 @@ TEST_SUITE(arena_realloc) {
 
         arena_t arena = create_arena(1024);
 
-        const int initial_array_size = 100;
+        const int initial_array_length = 100;
+        const int initial_array_size = sizeof(int) * initial_array_length;
 
-        int* integers = (int*)arena_alloc(&arena, sizeof(int) * initial_array_size);
+        int* integers = (int*)arena_alloc(&arena, initial_array_size);
 
-        for(int i = 0; i < initial_array_size; i++) {
+        for(int i = 0; i < initial_array_length; i++) {
             integers[i] = rand() % RAND_MAX;
         }
 
-        const int new_array_size = initial_array_size - 12;
-        int* integers2 = (int*)arena_realloc(&arena, integers, sizeof(int) * new_array_size);
+        const int new_array_length = initial_array_length - 12;
+        const int new_array_size = sizeof(int) * new_array_length;
+        int* integers2 = (int*)arena_realloc(&arena, integers, initial_array_size, new_array_size);
 
-        const size_t expected_used_space = sizeof(int) * (initial_array_size + new_array_size);
+        const size_t expected_used_space = initial_array_size + new_array_size;
         const size_t used_space = arena_get_current_used_space(&arena);
 
         TEST_ASSERT(used_space == expected_used_space, 
@@ -193,18 +197,19 @@ TEST_SUITE(arena_realloc) {
 
         arena_t arena = create_arena(1024);
 
-        const int initial_array_size = 100;
+        const int initial_array_length = 100;
+        const int initial_array_size = sizeof(int) * initial_array_length;
 
-        int* integers = (int*)arena_alloc(&arena, sizeof(int) * initial_array_size);
+        int* integers = (int*)arena_alloc(&arena, initial_array_size);
 
-        for(int i = 0; i < initial_array_size; i++) {
+        for(int i = 0; i < initial_array_length; i++) {
             integers[i] = rand() % RAND_MAX;
         }
 
         const int new_array_size = 0;
-        int* integers2 = (int*)arena_realloc(&arena, integers, sizeof(int) * new_array_size);
+        int* integers2 = (int*)arena_realloc(&arena, integers, initial_array_size, new_array_size);
 
-        const size_t expected_used_space = sizeof(int) * (initial_array_size + new_array_size);
+        const size_t expected_used_space = initial_array_size + new_array_size;
         const size_t used_space = arena_get_current_used_space(&arena);
 
         TEST_ASSERT(used_space == expected_used_space, 
@@ -220,10 +225,12 @@ TEST_SUITE(arena_realloc) {
 
         arena_t arena = create_arena(1024);
 
-        const int new_array_size = 10;
-        int* integers = (int*)arena_realloc(&arena, NULL, sizeof(int) * new_array_size);
+        const int new_array_length = 10;
+        const int new_array_size = new_array_length * sizeof(int);
 
-        const size_t expected_used_space = sizeof(int) * new_array_size;
+        int* integers = (int*)arena_realloc(&arena, NULL, 0, new_array_size);
+
+        const size_t expected_used_space = new_array_size;
         const size_t used_space = arena_get_current_used_space(&arena);
 
         TEST_ASSERT(used_space == expected_used_space, 

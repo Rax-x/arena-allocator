@@ -25,7 +25,11 @@ typedef struct {
 arena_t create_arena(size_t size);
 
 void* arena_alloc(arena_t* restrict arena, size_t size);
-void* arena_realloc(arena_t* restrict arena, void* ptr, size_t size);
+
+void* arena_realloc(arena_t* restrict arena, 
+                    const void* restrict ptr,
+                    size_t old_size, 
+                    size_t new_size);
 
 char* arena_strdup(arena_t* restrict arena, 
                    const char* restrict str);
@@ -130,16 +134,19 @@ void* arena_alloc(arena_t* restrict arena, size_t size) {
     return ptr;
 }
 
-void* arena_realloc(arena_t* restrict arena, void* ptr, size_t size) {
+void* arena_realloc(arena_t* restrict arena, 
+                    const void* restrict ptr, 
+                    size_t old_size, 
+                    size_t new_size) {
     
-    if(size <= 0) {
+    if(new_size <= 0) {
         return NULL;
     }
 
-    void* new_ptr = arena_alloc(arena, size);
+    void* new_ptr = arena_alloc(arena, new_size);
 
     if(ptr != NULL) {
-        memcpy(new_ptr, ptr, size);
+        memcpy(new_ptr, ptr, old_size);
     }
 
     return new_ptr;
