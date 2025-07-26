@@ -8,6 +8,49 @@ and paste from a project to another.
 >[!IMPORTANT]
 >This library is written in **C99**.
 
+# 🌱 How to Use It in Your Project
+This library is designed for easy integration into your C projects. 
+It follows the [stb-style](https://github.com/nothings/stb), which means you don't need 
+to compile it separately or link against any `.lib` or `.so` files.
+
+For more information about the stb-style, you can read this [guide](https://github.com/nothings/stb/blob/master/docs/stb_howto.txt).
+
+## Basic Usage
+To use the arena allocator in your project, simply include the `arena.h` header file. In one (and only one) of your `.c` source files, 
+you must define `ARENA_IMPLEMENTATION` before including `arena.h`. 
+This tells the preprocessor to include the function definitions in that specific compilation unit.
+
+```c
+// In one of your .c files (e.g., main.c)
+#define ARENA_IMPLEMENTATION
+#include "arena.h"
+
+// Your application code...
+```
+
+## Advanced Usage: Separating Implementation
+For larger projects, or to improve compilation times, you might prefer to put the implementation code 
+in a dedicated `.c` file. This is a common practice with stb-style libraries.
+
+**1. Create a separate implementation file (e.g., arena_impl.c):**
+```c
+// arena_impl.c
+// This file will contain the actual function definitions for the arena allocator.
+#define ARENA_IMPLEMENTATION
+#include "arena.h"
+```
+
+**2. Include the header in other project files (e.g., my_project_file.c):**
+```c
+// my_project_file.c
+// Other source files in your project can simply include the header.
+#include <stdio.h> // Example standard library include
+#include "arena.h" // Include the arena allocator header
+
+// Your project's code that uses the arena allocator
+// ...
+```
+
 # 🧪 Testing
 
 At the moment I've implemented only the basic test cases. 
