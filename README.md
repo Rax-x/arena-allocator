@@ -274,6 +274,27 @@ Returns the used space in the current chunk of the arena.
 
 **Returns:** A `size_t` representing the used space in bytes in the current chunk.
 
+# ✨ Customization
+
+You can integrate your custom `malloc()` and `free()` implementations with the library 
+by defining the `ARENA_MALLOC` and `ARENA_FREE` macros. 
+This allows the library to use your preferred memory management functions.
+
+>[!NOTE]
+> By default, `stdlib.h`'s malloc and free are used.
+
+```c
+#include "xmalloc.h" // Your custom memory allocation headers
+
+#define ARENA_MALLOC xmalloc
+#define ARENA_FREE xfree
+
+#define ARENA_IMPLEMENTATION
+#include "arena.h"
+
+...
+```
+
 # 🧮 Usage Considerations
 
 - **Lifetime Management:** Arena allocators are best suited for situations where many objects have the same lifetime and can be 
